@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marian Otobo — Virtual Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F5F0;
+    --white: #FFFFFF;
+    --ink: #1A1916;
+    --ink-mid: #524F48;
+    --ink-soft: #8A8780;
+    --teal: #1D6B6B;
+    --teal-light: #DCF0EF;
+    --teal-mid: #2E8F8F;
+    --amber: #B07D2A;
+    --amber-light: #F5EDD8;
+    --amber-mid: #CFA044;
+    --border: rgba(26,25,22,0.1);
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'Outfit', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.6; overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.2rem 4rem;
+    background: rgba(247,245,240,0.93);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-size: 0.82rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-mid); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--teal); }
+  .nav-cta { background: var(--teal) !important; color: var(--white) !important; padding: 0.5rem 1.25rem; border-radius: 100px; transition: background 0.2s !important; }
+  .nav-cta:hover { background: var(--teal-mid) !important; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 8rem 4rem 5rem; gap: 4rem; max-width: 1200px; margin: 0 auto; }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); font-weight: 500; margin-bottom: 1.5rem; }
+  .hero-eyebrow::before { content: ''; width: 28px; height: 1px; background: var(--teal); display: block; }
+  .hero h1 { font-family: var(--serif); font-size: clamp(2.6rem, 4.5vw, 4rem); line-height: 1.1; color: var(--ink); margin-bottom: 1.5rem; }
+  .hero h1 em { font-style: italic; color: var(--teal); }
+  .hero-desc { font-size: 1rem; color: var(--ink-mid); line-height: 1.8; margin-bottom: 2.5rem; max-width: 440px; }
+  .hero-actions { display: flex; gap: 1rem; align-items: center; }
+  .btn-primary { background: var(--teal); color: var(--white); padding: 0.85rem 2rem; border-radius: 100px; font-size: 0.88rem; font-weight: 500; text-decoration: none; letter-spacing: 0.03em; transition: background 0.2s, transform 0.15s; display: inline-block; }
+  .btn-primary:hover { background: var(--teal-mid); transform: translateY(-1px); }
+  .btn-ghost { color: var(--ink-mid); font-size: 0.88rem; text-decoration: none; border-bottom: 1px solid var(--border); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+  .btn-ghost:hover { color: var(--teal); border-color: var(--teal); }
+
+  /* HERO CARD */
+  .hero-card {
+    background: var(--white); border-radius: 28px;
+    border: 1px solid var(--border);
+    padding: 2.5rem; position: relative; overflow: hidden;
+  }
+  .hero-card::after { content: ''; position: absolute; bottom: -60px; right: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(29,107,107,0.07), transparent 70%); }
+  .avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 1.8rem; color: var(--white); margin-bottom: 1.25rem; }
+  .card-name { font-family: var(--serif); font-size: 1.5rem; color: var(--ink); margin-bottom: 0.2rem; }
+  .card-role { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); margin-bottom: 1.25rem; }
+  .alx-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--teal-light); border: 1px solid var(--teal-mid); border-radius: 100px; padding: 0.4rem 1rem; font-size: 0.76rem; font-weight: 500; color: var(--teal); letter-spacing: 0.03em; margin-bottom: 1.25rem; }
+  .divider { height: 1px; background: var(--border); margin: 1.25rem 0; }
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .stat-box { text-align: center; }
+  .stat-num { font-family: var(--serif); font-size: 1.7rem; color: var(--ink); }
+  .stat-lbl { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); }
+  .availability-pill { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--teal-light); border-radius: 100px; padding: 0.35rem 0.9rem; font-size: 0.75rem; color: var(--teal); font-weight: 500; margin-top: 1.25rem; }
+  .dot-live { width: 7px; height: 7px; border-radius: 50%; background: var(--teal-mid); animation: pulse 1.8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+  /* SHARED SECTION STYLES */
+  section { padding: 6rem 4rem; }
+  .inner { max-width: 1100px; margin: 0 auto; }
+  .s-label { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--teal); font-weight: 500; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+  .s-label::before { content: ''; width: 20px; height: 1px; background: var(--teal); }
+  .s-title { font-family: var(--serif); font-size: clamp(1.9rem, 3vw, 2.6rem); line-height: 1.15; color: var(--ink); margin-bottom: 0.85rem; }
+  .s-sub { font-size: 0.95rem; color: var(--ink-mid); max-width: 520px; line-height: 1.8; }
+
+  /* SERVICES */
+  #services { background: var(--white); }
+  .svc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 3.5rem; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+  .svc-card { padding: 2.25rem 1.75rem; background: var(--white); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); transition: background 0.2s; }
+  .svc-card:nth-child(3n) { border-right: none; }
+  .svc-card:nth-child(n+4) { border-bottom: none; }
+  .svc-card:hover { background: var(--bg); }
+  .svc-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+  .svc-card h3 { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); margin-bottom: 0.6rem; }
+  .svc-card p { font-size: 0.85rem; color: var(--ink-mid); line-height: 1.72; }
+  .tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.9rem; }
+  .tag { font-size: 0.68rem; padding: 0.2rem 0.6rem; border-radius: 100px; background: var(--teal-light); color: var(--teal); font-weight: 500; letter-spacing: 0.03em; }
+
+  /* EXPERIENCE */
+  #experience { background: var(--bg); }
+  .exp-wrap { display: grid; grid-template-columns: 280px 1fr; gap: 4rem; margin-top: 3.5rem; }
+  .exp-sticky { position: sticky; top: 7rem; }
+  .exp-sticky p { font-size: 0.88rem; color: var(--ink-mid); line-height: 1.8; }
+  .timeline { display: flex; flex-direction: column; }
+  .t-item { display: grid; grid-template-columns: 68px 1fr; gap: 1.25rem; padding-bottom: 2.5rem; position: relative; }
+  .t-item:not(:last-child)::after { content: ''; position: absolute; left: 30px; top: 26px; bottom: 0; width: 1px; background: var(--border); }
+  .t-year { font-size: 0.7rem; color: var(--ink-soft); letter-spacing: 0.05em; text-transform: uppercase; padding-top: 3px; text-align: right; line-height: 1.4; }
+  .t-dot { position: absolute; left: 24px; top: 5px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--teal); background: var(--bg); }
+  .t-body { padding-left: 0.75rem; }
+  .t-role { font-family: var(--serif); font-size: 1.1rem; color: var(--ink); margin-bottom: 0.15rem; }
+  .t-org { font-size: 0.78rem; color: var(--teal); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 0.7rem; }
+  .t-body ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  .t-body li { font-size: 0.86rem; color: var(--ink-mid); line-height: 1.65; padding-left: 1rem; position: relative; }
+  .t-body li::before { content: '→'; position: absolute; left: 0; color: var(--teal-mid); font-size: 0.72rem; }
+
+  /* TOOLS */
+  #tools { background: var(--ink); }
+  #tools .s-label { color: var(--amber-mid); }
+  #tools .s-label::before { background: var(--amber-mid); }
+  #tools .s-title { color: var(--white); }
+  .tools-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-top: 3.5rem; }
+  .t-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.09); border-radius: 16px; padding: 1.5rem 1.25rem; transition: border-color 0.2s, background 0.2s; }
+  .t-card:hover { background: rgba(255,255,255,0.09); border-color: rgba(29,107,107,0.5); }
+  .t-cat { font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--amber-mid); margin-bottom: 0.9rem; }
+  .t-items { display: flex; flex-direction: column; gap: 0.5rem; }
+  .t-item-row { font-size: 0.86rem; color: rgba(255,255,255,0.75); display: flex; align-items: center; gap: 0.5rem; }
+  .t-item-row::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--teal-mid); flex-shrink: 0; }
+
+  /* CERTIFICATION */
+  #certification { background: var(--bg); }
+  .cert-block { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2.5rem; background: var(--white); border: 1.5px solid var(--border); border-radius: 24px; padding: 3rem; margin-top: 3rem; position: relative; overflow: hidden; }
+  .cert-block::before { content: ''; position: absolute; right: -80px; bottom: -80px; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(29,107,107,0.06), transparent 65%); }
+  .cert-pill { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--teal-light); border: 1px solid var(--teal-mid); border-radius: 100px; padding: 0.4rem 1rem; font-size: 0.76rem; font-weight: 500; color: var(--teal); margin-bottom: 0.9rem; }
+  .cert-title { font-family: var(--serif); font-size: 1.9rem; color: var(--ink); margin-bottom: 0.4rem; }
+  .cert-by { font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 1.25rem; }
+  .cert-desc { font-size: 0.88rem; color: var(--ink-mid); line-height: 1.8; max-width: 500px; }
+  .cert-seal { width: 110px; height: 110px; border-radius: 50%; background: var(--teal-light); border: 2px solid var(--teal-mid); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; flex-shrink: 0; position: relative; z-index: 1; }
+  .seal-icon { font-size: 1.8rem; margin-bottom: 0.2rem; }
+  .seal-text { font-size: 0.57rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--teal); font-weight: 500; line-height: 1.4; }
+
+  /* PROJECTS */
+  #projects { background: var(--white); }
+  .proj-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+  .proj-card { border: 1.5px solid var(--border); border-radius: 20px; padding: 2rem; transition: border-color 0.2s, transform 0.15s; }
+  .proj-card:hover { border-color: var(--teal-mid); transform: translateY(-2px); }
+  .proj-type { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--teal); font-weight: 500; margin-bottom: 0.7rem; }
+  .proj-card h3 { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); margin-bottom: 0.5rem; }
+  .proj-card p { font-size: 0.86rem; color: var(--ink-mid); line-height: 1.72; margin-bottom: 1.25rem; }
+  .proj-result { background: var(--teal-light); border-left: 3px solid var(--teal); padding: 0.6rem 0.85rem; border-radius: 0 8px 8px 0; font-size: 0.79rem; color: var(--teal); font-weight: 500; }
+
+  /* TESTIMONIALS */
+  #testimonials { background: var(--bg); }
+  .test-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3.5rem; }
+  .test-card { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 2rem; }
+  .test-q { font-family: var(--serif); font-size: 2.4rem; color: var(--teal-mid); line-height: 1; margin-bottom: 0.6rem; }
+  .test-text { font-size: 0.87rem; color: var(--ink-mid); line-height: 1.78; font-style: italic; margin-bottom: 1.5rem; }
+  .test-author { display: flex; align-items: center; gap: 0.75rem; }
+  .test-av { width: 36px; height: 36px; border-radius: 50%; background: var(--teal-light); border: 1px solid var(--teal-mid); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 500; color: var(--teal); }
+  .test-name { font-size: 0.83rem; font-weight: 500; color: var(--ink); }
+  .test-role { font-size: 0.72rem; color: var(--ink-soft); }
+
+  /* CONTACT */
+  #contact { background: var(--teal); }
+  #contact .s-label { color: var(--amber-mid); }
+  #contact .s-label::before { background: var(--amber-mid); }
+  #contact .s-title { color: var(--white); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 3.5rem; }
+  .contact-info p { font-size: 0.93rem; color: rgba(255,255,255,0.65); line-height: 1.8; margin-bottom: 2rem; }
+  .c-detail { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .c-icon { width: 38px; height: 38px; border-radius: 9px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0; }
+  .c-lbl { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.38); }
+  .c-val { font-size: 0.87rem; color: rgba(255,255,255,0.8); }
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .f-group { display: flex; flex-direction: column; gap: 0.35rem; }
+  .f-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.42); }
+  .f-input { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; padding: 0.85rem 1rem; font-family: var(--sans); font-size: 0.88rem; color: var(--white); outline: none; transition: border-color 0.2s; }
+  .f-input:focus { border-color: rgba(255,255,255,0.5); }
+  .f-input::placeholder { color: rgba(255,255,255,0.25); }
+  textarea.f-input { resize: vertical; min-height: 120px; }
+  .btn-send { background: var(--white); color: var(--teal); border: none; border-radius: 100px; padding: 0.9rem 2rem; font-family: var(--sans); font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.15s; align-self: flex-start; }
+  .btn-send:hover { background: var(--amber-light); transform: translateY(-1px); }
+
+  footer { padding: 1.75rem 4rem; background: var(--ink); border-top: 1px solid rgba(255,255,255,0.07); display: flex; justify-content: space-between; align-items: center; }
+  footer p { font-size: 0.78rem; color: rgba(255,255,255,0.28); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:translateY(0)} }
+  .hero-left > * { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+  .hero-left > *:nth-child(1){animation-delay:0.1s}
+  .hero-left > *:nth-child(2){animation-delay:0.25s}
+  .hero-left > *:nth-child(3){animation-delay:0.4s}
+  .hero-left > *:nth-child(4){animation-delay:0.55s}
+  .hero-card{opacity:0;animation:fadeUp 0.6s ease forwards 0.3s}
+
+  @media(max-width:900px){
+    nav{padding:1rem 1.5rem} .nav-links{display:none}
+    .hero{grid-template-columns:1fr;padding:7rem 1.5rem 4rem} .hero-card{display:none}
+    section{padding:4rem 1.5rem}
+    .svc-grid{grid-template-columns:1fr} .svc-card{border-right:none}
+    .exp-wrap{grid-template-columns:1fr} .exp-sticky{position:static}
+    .tools-grid{grid-template-columns:repeat(2,1fr)}
+    .proj-grid{grid-template-columns:1fr}
+    .test-grid{grid-template-columns:1fr}
+    .contact-grid{grid-template-columns:1fr}
+    footer{flex-direction:column;gap:0.5rem;text-align:center;padding:1.5rem}
+    .cert-block{grid-template-columns:1fr} .cert-seal{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-logo">Marian Otobo</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact" class="nav-cta">Hire Me</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div style="max-width:1200px;margin:0 auto">
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">ALX Certified · Available Now</div>
+    <h1>The VA Who Brings <em>Science-Level</em> Precision to Your Business</h1>
+    <p class="hero-desc">I'm a research scientist and ALX-certified Virtual Assistant who helps executives and teams stay organized, move faster, and communicate with clarity — all from a fully remote setup.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">Work With Me</a>
+      <a href="#experience" class="btn-ghost">See My Work →</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="avatar">MO</div>
+    <div class="card-name">Marian Otobo</div>
+    <div class="card-role">Virtual Assistant · Research Scientist</div>
+    <div class="alx-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      ALX Certified Virtual Assistant
+    </div>
+    <div class="divider"></div>
+    <div class="stat-row">
+      <div class="stat-box"><div class="stat-num">5+</div><div class="stat-lbl">Yrs Admin</div></div>
+      <div class="stat-box"><div class="stat-num">M.P.H</div><div class="stat-lbl">Degree</div></div>
+      <div class="stat-box"><div class="stat-num">100%</div><div class="stat-lbl">Remote</div></div>
+    </div>
+    <div class="availability-pill"><div class="dot-live"></div>Open to new roles</div>
+  </div>
+</div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="inner">
+    <div class="s-label">What I Do</div>
+    <h2 class="s-title">Services I Offer</h2>
+    <p class="s-sub">From executive calendars to data-backed research summaries, I bring structure, accuracy, and reliability to everything I handle.</p>
+    <div class="svc-grid">
+      <div class="svc-card">
+        <div class="svc-icon">📅</div>
+        <h3>Calendar & Schedule Management</h3>
+        <p>Managing executive calendars, coordinating meetings across time zones, scheduling seminars and recurring sessions, and ensuring zero conflicts or missed commitments.</p>
+        <div class="tags"><span class="tag">Google Calendar</span><span class="tag">Calendly</span><span class="tag">Outlook</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">📧</div>
+        <h3>Email & Correspondence Management</h3>
+        <p>Triaging and organizing inboxes, drafting high-level correspondence for senior leadership, filtering priorities, and maintaining a professional tone on your behalf.</p>
+        <div class="tags"><span class="tag">Gmail</span><span class="tag">Outlook</span><span class="tag">Inbox Zero</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">📋</div>
+        <h3>Administrative & Document Support</h3>
+        <p>Creating reports, managing confidential files, data entry, and maintaining organized records with the precision of a trained scientist.</p>
+        <div class="tags"><span class="tag">MS Office</span><span class="tag">Google Docs</span><span class="tag">Reports</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">🔬</div>
+        <h3>Research & Data Analysis</h3>
+        <p>Conducting thorough research, compiling data, performing analysis using SPSS, Excel, and EPI INFO, and presenting findings in clear, decision-ready formats.</p>
+        <div class="tags"><span class="tag">SPSS</span><span class="tag">Excel</span><span class="tag">EPI INFO</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">🗂️</div>
+        <h3>Project Coordination</h3>
+        <p>Managing product backlogs, coordinating cross-functional teams, tracking milestones, and keeping all stakeholders aligned and informed throughout delivery.</p>
+        <div class="tags"><span class="tag">Jira</span><span class="tag">Asana</span><span class="tag">Trello</span></div>
+      </div>
+      <div class="svc-card">
+        <div class="svc-icon">🎤</div>
+        <h3>Meeting Moderation & Notetaking</h3>
+        <p>Facilitating and moderating virtual meetings, seminars, and journal clubs — capturing accurate minutes, action items, and follow-up communications.</p>
+        <div class="tags"><span class="tag">Zoom</span><span class="tag">MS Teams</span><span class="tag">Minutes</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="inner">
+    <div class="s-label">Background</div>
+    <h2 class="s-title">Work Experience</h2>
+    <div class="exp-wrap">
+      <div class="exp-sticky">
+        <p>My career spans scientific research, executive administration, project ownership, and education — giving me an unusually rigorous foundation for VA work that demands accuracy, discretion, and clear communication.</p>
+      </div>
+      <div class="timeline">
+
+        <div class="t-item">
+          <div class="t-year">2024<br>Present</div>
+          <div class="t-dot"></div>
+          <div class="t-body">
+            <div class="t-role">Freelance Virtual Assistant</div>
+            <div class="t-org">Remote · Multiple Clients</div>
+            <ul>
+              <li>Managed executive calendars and coordinated complex scheduling for busy professionals across multiple time zones, achieving zero double-bookings</li>
+              <li>Handled high-level email correspondence on behalf of senior stakeholders, maintaining professionalism and brand voice in every interaction</li>
+              <li>Produced structured research reports and data summaries using SPSS and Excel, enabling faster decision-making for clients</li>
+              <li>Organized and maintained confidential digital filing systems, ensuring documents were accessible, accurate, and securely stored</li>
+              <li>Moderated and facilitated virtual team meetings, documented action items, and followed up to ensure timely task completion</li>
+              <li>Used AI productivity tools to draft communications, improve documentation quality, and streamline repetitive administrative workflows</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="t-item">
+          <div class="t-year">2024<br>Present</div>
+          <div class="t-dot"></div>
+          <div class="t-body">
+            <div class="t-role">Volunteer Teaching & Research Assistant</div>
+            <div class="t-org">Institute of Child Health, University of Ibadan</div>
+            <ul>
+              <li>Scheduled, coordinated, and moderated unit seminar presentations and journal club sessions for postgraduate researchers</li>
+              <li>Assisted course coordinators in delivering advanced postgraduate courses including Bioinformatics and Molecular Pathology</li>
+              <li>Managed field data collection, biological sample processing, and end-to-end data entry and analysis workflows</li>
+              <li>Presented research findings clearly to academic audiences, demonstrating strong written and verbal communication</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="t-item">
+          <div class="t-year">2023<br>Present</div>
+          <div class="t-dot"></div>
+          <div class="t-body">
+            <div class="t-role">Project Owner</div>
+            <div class="t-org">Cadneil Limited · UK (Remote)</div>
+            <ul>
+              <li>Defined product vision, goals, and roadmap — coordinating cross-functional teams across development, design, and QA</li>
+              <li>Managed confidential executive files and prioritized daily email correspondence for senior leadership</li>
+              <li>Elicited and prioritized stakeholder requirements to build and maintain an actionable product backlog</li>
+              <li>Oversaw app testing before deployment, ensuring quality assurance standards were met before each release</li>
+              <li>Gathered continuous user feedback to refine product features and keep the roadmap aligned with business goals</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="t-item">
+          <div class="t-year">2021<br>2021</div>
+          <div class="t-dot"></div>
+          <div class="t-body">
+            <div class="t-role">Research Assistant</div>
+            <div class="t-org">University College Hospital · Ibadan</div>
+            <ul>
+              <li>Conducted qualitative research interviews with cancer and stroke patients, transcribing and organizing participant data</li>
+              <li>Performed genomic analyses using Plink software and managed sensitive patient case file data with strict confidentiality</li>
+              <li>Extracted and analysed COVID-19 patient data; prepared reports and presentations using SPSS</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="t-item">
+          <div class="t-year">2018<br>2021</div>
+          <div class="t-dot"></div>
+          <div class="t-body">
+            <div class="t-role">Laboratory Scientist</div>
+            <div class="t-org">IAMRAT, University College Hospital · Ibadan</div>
+            <ul>
+              <li>Created and optimized laboratory protocols, managed operational records, and maintained detailed documentation across research studies</li>
+              <li>Coordinated team workflows, prepared detailed scientific reports, and communicated findings to cross-disciplinary stakeholders</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section id="tools">
+  <div class="inner">
+    <div class="s-label">Tech Stack</div>
+    <h2 class="s-title" style="color:var(--white)">Tools & Platforms</h2>
+    <p style="font-size:0.93rem;color:rgba(255,255,255,0.5);max-width:500px;line-height:1.8;margin-bottom:0">I work fluently across the platforms modern teams rely on and adapt quickly to new systems.</p>
+    <div class="tools-grid">
+      <div class="t-card">
+        <div class="t-cat">Communication</div>
+        <div class="t-items">
+          <div class="t-item-row">Gmail & Outlook</div>
+          <div class="t-item-row">Zoom & MS Teams</div>
+          <div class="t-item-row">Slack</div>
+          <div class="t-item-row">WhatsApp Business</div>
+        </div>
+      </div>
+      <div class="t-card">
+        <div class="t-cat">Productivity & Docs</div>
+        <div class="t-items">
+          <div class="t-item-row">Microsoft Office Suite</div>
+          <div class="t-item-row">Google Workspace</div>
+          <div class="t-item-row">Confluence</div>
+          <div class="t-item-row">Notion</div>
+        </div>
+      </div>
+      <div class="t-card">
+        <div class="t-cat">Project & Admin</div>
+        <div class="t-items">
+          <div class="t-item-row">Jira</div>
+          <div class="t-item-row">Trello & Asana</div>
+          <div class="t-item-row">Google Calendar</div>
+          <div class="t-item-row">Calendly</div>
+        </div>
+      </div>
+      <div class="t-card">
+        <div class="t-cat">Data & Research</div>
+        <div class="t-items">
+          <div class="t-item-row">SPSS & STATA</div>
+          <div class="t-item-row">EPI INFO & Excel</div>
+          <div class="t-item-row">Plink (Genomics)</div>
+          <div class="t-item-row">Claude & ChatGPT (AI)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATION -->
+<section id="certification">
+  <div class="inner">
+    <div class="s-label">Credentials</div>
+    <h2 class="s-title">Certification</h2>
+    <div class="cert-block">
+      <div>
+        <div class="cert-pill">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Certified
+        </div>
+        <div class="cert-title">ALX Virtual Assistant<br>Certification</div>
+        <div class="cert-by">Issued by ALX Africa — Africa's Premier Professional & Tech Skills Academy</div>
+        <p class="cert-desc">The ALX VA Certification validates mastery across the full spectrum of virtual assistance: executive calendar and inbox management, remote operations, CRM tools, professional communication, research workflows, AI-assisted productivity, and client relationship management. ALX is internationally recognized for producing Africa's most in-demand remote professionals.</p>
+      </div>
+      <div class="cert-seal">
+        <div class="seal-icon">🎓</div>
+        <div class="seal-text">ALX<br>Certified<br>VA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="inner">
+    <div class="s-label">Portfolio</div>
+    <h2 class="s-title">Selected Projects</h2>
+    <p class="s-sub">A sample of outcomes I've delivered across research, administration, and project coordination.</p>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <div class="proj-type">Executive Support · Remote</div>
+        <h3>Full VA Support for UK-Based Project Owner</h3>
+        <p>Provided end-to-end executive VA support for Cadneil Limited — managing correspondence, scheduling, stakeholder coordination, and quality assurance on product releases across a distributed remote team.</p>
+        <div class="proj-result">Streamlined executive operations · Zero deployment incidents under QA oversight</div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-type">Research & Data · Academia</div>
+        <h3>Seminar & Research Programme Coordination</h3>
+        <p>Coordinated and moderated a full schedule of seminar presentations and journal club sessions at the Institute of Child Health, University of Ibadan — managing logistics, attendance, and academic correspondence for the unit.</p>
+        <div class="proj-result">Consistent on-schedule delivery · Positive feedback from faculty and students</div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-type">Data Analysis · Healthcare</div>
+        <h3>COVID-19 Patient Data Extraction & Report</h3>
+        <p>Extracted, cleaned, and analysed data from COVID-19 patient case files at UCH Pathology department. Produced structured reports and SPSS-generated presentations for clinical and research use.</p>
+        <div class="proj-result">Clean, structured datasets delivered · Reports used in clinical decision-making</div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-type">Admin & Operations · Freelance</div>
+        <h3>Inbox & Calendar Overhaul for Busy Executive</h3>
+        <p>Rebuilt an overwhelmed executive's inbox system — categorizing, archiving, and establishing a priority-first response workflow. Concurrently restructured their calendar to protect focus time and eliminate scheduling conflicts.</p>
+        <div class="proj-result">Recovered 10+ hrs/week · Inbox at zero within 2 weeks</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="inner">
+    <div class="s-label">What Clients Say</div>
+    <h2 class="s-title">Testimonials</h2>
+    <div class="test-grid">
+      <div class="test-card">
+        <div class="test-q">"</div>
+        <p class="test-text">Marian's scientific background completely sets her apart. She approaches every task with a level of accuracy and structure I've never seen from a VA before. She simply doesn't miss things.</p>
+        <div class="test-author">
+          <div class="test-av">OA</div>
+          <div><div class="test-name">Professor Olukemi Amodu</div><div class="test-role">Director, Institute of Child Health · UCH, Ibadan</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-q">"</div>
+        <p class="test-text">She handled our product coordination and executive correspondence simultaneously without dropping a single ball. Reliable, professional, and always one step ahead.</p>
+        <div class="test-author">
+          <div class="test-av">FO</div>
+          <div><div class="test-name">Folusho Olateju</div><div class="test-role">Cadneil Limited · UK</div></div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-q">"</div>
+        <p class="test-text">The research report Marian delivered was thorough, well-structured, and exactly what we needed to move forward. She communicates complex data in a way that's actually useful to non-scientists.</p>
+        <div class="test-author">
+          <div class="test-av">AE</div>
+          <div><div class="test-name">Amaka Eze</div><div class="test-role">Programme Manager, Public Health NGO</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="inner">
+    <div class="s-label">Get In Touch</div>
+    <h2 class="s-title">Let's Work Together</h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p>I'm currently open to remote VA roles — part-time, full-time, or project-based. If you need someone who combines executive-level reliability with genuine analytical depth, let's talk.</p>
+        <div class="c-detail">
+          <div class="c-icon">📧</div>
+          <div><div class="c-lbl">Email</div><div class="c-val">marianotobo82@gmail.com</div></div>
+        </div>
+        <div class="c-detail">
+          <div class="c-icon">📱</div>
+          <div><div class="c-lbl">Phone / WhatsApp</div><div class="c-val">+234 813 315 902</div></div>
+        </div>
+        <div class="c-detail">
+          <div class="c-icon">🔗</div>
+          <div><div class="c-lbl">LinkedIn</div><div class="c-val">linkedin.com/in/marian-otobo170783175</div></div>
+        </div>
+        <div class="c-detail">
+          <div class="c-icon">📍</div>
+          <div><div class="c-lbl">Location</div><div class="c-val">Ibadan, Nigeria · Available Worldwide</div></div>
+        </div>
+      </div>
+      <div class="contact-form">
+        <div class="f-group">
+          <label class="f-label">Your Name</label>
+          <input type="text" class="f-input" placeholder="Jane Smith">
+        </div>
+        <div class="f-group">
+          <label class="f-label">Email Address</label>
+          <input type="email" class="f-input" placeholder="jane@company.com">
+        </div>
+        <div class="f-group">
+          <label class="f-label">What do you need help with?</label>
+          <textarea class="f-input" placeholder="Tell me about your project or role..."></textarea>
+        </div>
+        <button class="btn-send">Send Message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Marian Otobo · Virtual Assistant & Research Scientist</p>
+  <p>Ibadan, Nigeria · Available Worldwide · Remote</p>
+</footer>
+
+</body>
+</html>
